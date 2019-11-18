@@ -29,10 +29,10 @@ public class IndexBean implements Serializable {
 		String redireccion = "";
 
 		try {
-			Usuario usuario = service.login(us);
-			if(usuario != null && usuario.getEstado().equalsIgnoreCase("A")) {
+			Usuario usuarioDB = service.login(us);
+			if(usuarioDB.getId() != null && usuarioDB.getEstado().equalsIgnoreCase("A")) {
 				//Almacenar en la sesion de JSF y proseguir con la navegacion
-				FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("usuario", usuario);
+				FacesContext.getCurrentInstance().getExternalContext().getSessionMap().put("usuario", usuarioDB);
 				redireccion = "/protegido/roles?faces-redirect=true";
 			}else {
 				FacesContext.getCurrentInstance().addMessage(null, new FacesMessage(FacesMessage.SEVERITY_WARN, "Aviso", "Credenciales incorrectas"));

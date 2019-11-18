@@ -10,6 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 @Entity
 @Table(name = "persona")
@@ -39,6 +40,9 @@ public class Persona implements Serializable {
 
 	@Column(name = "foto", nullable = true)
 	private byte[] foto;
+
+	@Transient
+	private boolean esSeguido;
 
 	public Integer getIdPersona() {
 		return idPersona;
@@ -103,5 +107,40 @@ public class Persona implements Serializable {
 	public void setUs(Usuario us) {
 		this.us = us;
 	}
+
+	public boolean isEsSeguido() {
+		return esSeguido;
+	}
+
+	public void setEsSeguido(boolean esSeguido) {
+		this.esSeguido = esSeguido;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((idPersona == null) ? 0 : idPersona.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Persona other = (Persona) obj;
+		if (idPersona == null) {
+			if (other.idPersona != null)
+				return false;
+		} else if (!idPersona.equals(other.idPersona))
+			return false;
+		return true;
+	}
+	
+	
 
 }

@@ -29,11 +29,11 @@ public class Publicacion implements Serializable {
 
 	@Column(name = "cuerpo", nullable = false, length = 250)
 	private String cuerpo;
-	
+
 	@OneToMany(mappedBy = "publicacion", cascade = { CascadeType.PERSIST, CascadeType.MERGE,
 			CascadeType.REMOVE }, fetch = FetchType.LAZY, orphanRemoval = true)
-	private List<Tag> tags;	
-	
+	private List<Tag> tags;
+
 	@OneToMany(mappedBy = "publicacion", cascade = { CascadeType.PERSIST, CascadeType.MERGE,
 			CascadeType.REMOVE }, fetch = FetchType.LAZY, orphanRemoval = true)
 	private List<Mencion> menciones;
@@ -52,6 +52,22 @@ public class Publicacion implements Serializable {
 
 	public void setPublicador(Persona publicador) {
 		this.publicador = publicador;
+	}
+
+	public List<Tag> getTags() {
+		return tags;
+	}
+
+	public void setTags(List<Tag> tags) {
+		this.tags = tags;
+	}
+
+	public List<Mencion> getMenciones() {
+		return menciones;
+	}
+
+	public void setMenciones(List<Mencion> menciones) {
+		this.menciones = menciones;
 	}
 
 	public String getCuerpo() {

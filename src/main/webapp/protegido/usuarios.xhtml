@@ -1,0 +1,165 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui">
+
+<ui:composition template="/WEB-INF/templates/master.xhtml">
+
+	<ui:define name="content">
+		<h1>Usuarios</h1>
+		<h:form id="frm" enctype="multipart/form-data">
+		<p:growl autoUpdate="true" showDetail="true" showSummary="true"/>
+			<div class="ui-fluid">
+
+				<div class="ui-g">
+					<div class="ui-g-12 ui-md-4">
+						<p:outputLabel value="Usuario" />
+					</div>
+					<div class="ui-g-12 ui-md-4">
+						<p:inputText id="txtUsuario" value="#{usuarioBean.usuarioStr}" />
+					</div>
+					<div class="ui-g-12 ui-md-4">
+						<p:commandButton value="Buscar" action="#{usuarioBean.listar}"
+							process="@this,dt,txtUsuario" update="@form" />
+					</div>
+				</div>
+				<div class="ui-g">
+					<p:dataTable id="dt" var="e" value="#{usuarioBean.lista}"
+						paginator="true" rows="5"
+						paginatorTemplate="{RowsPerPageDropdown} {FirstPageLink} {PreviousPageLink} {CurrentPageReport} {NextPageLink} {LastPageLink}"
+						rowsPerPageTemplate="5,10,15">
+
+						<p:column headerText="Usuario">
+							<p:outputLabel value="#{e.usuario}" />
+						</p:column>
+
+						<p:column headerText="Nombres Completos">
+							<p:outputLabel
+								value="#{e.persona.nombres} - #{e.persona.apellidos}" />
+						</p:column>
+
+						<p:column headerText="Sexo">
+							<p:outputLabel value="#{e.persona.sexo}" />
+						</p:column>
+
+						<p:column headerText="País">
+							<p:outputLabel value="#{e.persona.pais}" />
+						</p:column>
+
+						<p:column headerText="Acciones" exportable="false">
+							<p:commandLink actionListener="#{usuarioBean.mostrarData(e)}"
+								oncomplete="PF('wdlg').show()" update="dlg" immediate="true"
+								process="@this">
+								<p:graphicImage library="images" name="edit.jpg" />
+							</p:commandLink>
+						</p:column>
+
+					</p:dataTable>
+				</div>
+			</div>
+
+		</h:form>
+
+		<p:dialog id="dlg" widgetVar="wdlg" style="width:400px !important;"
+			header="#{usuarioBean.tipoDialog} Usuario #{usuarioBean.usuario.usuario}"
+			modal="true" closeOnEscape="true" resizable="false" draggable="true">
+			<h:form id="frmUsuario" enctype="multipart/form-data">
+				<div class="ui-fluid">
+					<div class="ui-g">
+						<div class="ui-g-12 ui-md-4">
+							<p:outputLabel value="Usuario" />
+						</div>
+						<div class="ui-g-12 ui-md-4">
+							<p:inputText id="txtUsuario"
+								value="#{usuarioBean.usuario.usuario}" disabled="true" />
+						</div>
+					</div>
+					<div class="ui-g">
+						<div class="ui-g-12 ui-md-4">
+							<p:outputLabel value="Contraseña Actual" />
+						</div>
+						<p:outputPanel id="opnlCurPsswordd" layout="block" styleClass="ui-g-12 ui-md-4">
+							<div class="ui-g ui-g-nopad">
+								<div class="ui-g-11 ui-g-nopad">
+									<p:password id="txtCurPassword" required="true"
+										value="#{usuarioBean.usuario.contrasena}" />
+								</div>
+								<div class="ui-g-1 ui-g-nopad">
+									<p:message for="txtCurPassword" display="icon" id="msgCurPass" />
+								</div>
+							</div>
+						</p:outputPanel> 
+						<div class="ui-g-12 ui-md-4">
+							<p:commandButton value="Verificar" 
+							process="@this,opnlCurPsswordd"
+							action="#{usuarioBean.verificarPassword}"
+							update="opnlCurPsswordd,cmbAccept" 
+							/>
+						</div>
+					</div>
+					<div class="ui-g">
+						<div class="ui-g-12 ui-md-8 ui-g-nopad">
+							<div class="ui-g-12 ui-g-nopad">
+								<div class="ui-g">
+									<div class="ui-g-12 ui-md-6">
+										<p:outputLabel value="Contraseña Nueva" />
+									</div>
+									<div class="ui-g-12 ui-md-6">
+										<p:outputPanel layout="block" styleClass="ui-g ui-g-nopad clsPasswords">
+											<div class="ui-g-11 ui-g-nopad">
+												<p:password id="txtNewPassword1"
+													label="Contraseña Nueva"
+													value="#{usuarioBean.password1}" match="txtNewPassword2"
+													required="true" />
+											</div>
+											<div class="ui-g-1 ui-g-nopad">
+												<p:message for="txtNewPassword1" display="icon"
+													id="msgCurPassNew1" />
+											</div>
+										</p:outputPanel>
+									</div>
+								</div>
+								<div class="ui-g">
+									<div class="ui-g-12 ui-md-6">
+										<p:outputLabel value="Repetir Contraseña" />
+									</div>
+									<div class="ui-g-12 ui-md-6">
+										<p:outputPanel layout="block" styleClass="ui-g ui-g-nopad clsPasswords">
+											<div class="ui-g-11 ui-g-nopad">
+												<p:password id="txtNewPassword2"
+												    label="Contraseña Repetida"
+													value="#{usuarioBean.password2}" required="true" />
+											</div>
+											<div class="ui-g-1 ui-g-nopad">
+												<p:message for="txtNewPassword2" display="icon"
+													id="msgCurPassNew2" />
+											</div>
+										</p:outputPanel>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="ui-g-12 ui-md-4">Las contraseñas deben coincidir
+							para poder aceptar.</div>
+					</div>
+					<div class="ui-g">
+						<p:commandButton id="cmbAccept" 
+										 value="Aceptar"
+										 disabled="#{!usuarioBean.claveVerificada}"
+										 action="#{usuarioBean.changePassword}"
+										 process="@this, @(.clsPasswords)"
+										 />
+						<p:commandButton value="Cancelar"
+										 onclick="PF('wdlg').hide();return false;"/>
+					</div>
+				</div>
+			</h:form>
+		</p:dialog>
+
+
+	</ui:define>
+</ui:composition>
+
+</html>

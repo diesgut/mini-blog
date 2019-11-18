@@ -9,6 +9,8 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
+import org.apache.commons.lang.StringUtils;
+
 import com.mitocode.dao.IUsuarioDAO;
 import com.mitocode.model.Usuario;
 
@@ -73,18 +75,19 @@ public class UsuarioDAOImpl implements IUsuarioDAO, Serializable {
 	public String traerPassHashed(String us) {
 		Usuario usuario = new Usuario();
 		try {
-			//SQL | select contrasena from usuario whrere usuario = '';
+			// SQL | select contrasena from usuario whrere usuario = '';
 			Query query = em.createQuery("FROM Usuario u WHERE u.usuario = ?1");
 			query.setParameter(1, us);
-			
+
 			List<Usuario> lista = query.getResultList();
 			if (!lista.isEmpty()) {
 				usuario = lista.get(0);
 			}
-		}catch(Exception e) {
+		} catch (Exception e) {
 			throw e;
 		}
-		return usuario != null && usuario.getId() != null? usuario.getContrasena() : "$2y$12$BkSuESEFvw5Ce2jQnWkr/eD2CH/9mVwPpV2s8LQL9PeW6xAOs3R9.";
+		return usuario != null && usuario.getId() != null ? usuario.getContrasena()
+				: "$2y$12$BkSuESEFvw5Ce2jQnWkr/eD2CH/9mVwPpV2s8LQL9PeW6xAOs3R9.";
 	}
 
 	@Override
@@ -105,6 +108,33 @@ public class UsuarioDAOImpl implements IUsuarioDAO, Serializable {
 			throw e;
 		}
 		return usuario;
+	}
+
+	@Override
+	public List<Usuario> allByUsername(String usuarioStr) throws Exception {
+		StringBuilder strb = new StringBuilder();
+		strb.append("	SELECT u FROM Usuario u	");
+		strb.append("	join fetch u.persona p	");
+		strb.append("	where 1=1	");
+		if (StringUtils.isNotBlank(usuarioStr)) {
+			strb.append("	and LOWER(u.usuario) like LOWER(:USUARIO) 	");
+		}
+		Query query = em.createQuery(strb.toString());
+		if (StringUtils.isNotBlank(usuarioStr)) {
+			query.setParameter("USUARIO", "%" + usuarioStr + "%");
+		}
+		List<Usuario> lista = (List<Usuario>) query.getResultList();
+		return lista;
+	}
+
+	@Override
+	public void updatePassword(Usuario usuario) {
+		StringBuilder strb = new StringBuilder();
+		strb.append("	update Usuario usu set usu.contrasena = :PASSWORD where usu.id = :USUARIO	");
+		Query query = em.createQuery(strb.toString());
+		query.setParameter("PASSWORD", usuario.getContrasena());
+		query.setParameter("USUARIO", usuario.getId());
+		query.executeUpdate();
 	}
 
 }

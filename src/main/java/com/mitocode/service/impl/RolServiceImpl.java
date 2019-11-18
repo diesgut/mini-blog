@@ -48,8 +48,11 @@ public class RolServiceImpl implements IRolService, Serializable{
 	public Integer asignar(Usuario us, List<Rol> roles) {		
 		List<UsuarioRol> usuario_roles = new ArrayList<>();
 		
+		//llamar a un query en el dao que traiga el ultimo id
+		
 		roles.forEach(r -> {
 			UsuarioRol ur = new UsuarioRol();
+			//ur.setId(//llamando a ese id);
 			ur.setUsuario(us);
 			ur.setRol(r);
 			usuario_roles.add(ur);

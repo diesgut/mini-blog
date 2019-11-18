@@ -25,6 +25,15 @@ public class Mencion implements Serializable {
 
 	@Column(name = "texto")
 	private String texto;
+		
+	public Mencion() {
+		
+	}
+	
+	public Mencion(Publicacion publicacion, String texto) {		
+		this.publicacion = publicacion;
+		this.texto = texto;
+	}
 
 	public Integer getId() {
 		return id;

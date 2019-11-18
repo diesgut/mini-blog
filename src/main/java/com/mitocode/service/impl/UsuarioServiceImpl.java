@@ -1,6 +1,7 @@
 package com.mitocode.service.impl;
 
 import java.io.Serializable;
+import java.util.List;
 
 import javax.ejb.EJB;
 import javax.inject.Named;
@@ -31,6 +32,16 @@ public class UsuarioServiceImpl implements IUsuarioService, Serializable {
 		}
 
 		return new Usuario();
+	}
+
+	@Override
+	public List<Usuario> listarUsuariosByname(String usuarioStr) throws Exception {
+		return dao.allByUsername(usuarioStr);
+	}
+
+	@Override
+	public void changeUserPassword(Usuario usuario) {
+		dao.updatePassword(usuario);
 	}
 
 }
